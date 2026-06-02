@@ -33,7 +33,7 @@ jobs:
           FOLDER: "./main-site/dist/" # Adjust 'dist' to your framework's build folder
           SERVER_IP: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
-          SERVER_DESTINATION: "/srv/www/://example.com"
+          SERVER_DESTINATION: "/srv/projects/websites/homepage"
 
       # --- BUILD SUBDOMAIN APP ---
       - name: Install & Build App 2
@@ -51,4 +51,4 @@ jobs:
           FOLDER: "./subdomain-app-test/dist/"
           SERVER_IP: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
-          SERVER_DESTINATION: "/srv/www/app.://example.com"
+          SERVER_DESTINATION: "/srv/projects/websites/testproject"
