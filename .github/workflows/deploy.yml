@@ -13,27 +13,25 @@ jobs:
         uses: actions/checkout@v4
 
       # --- DEPLOY MAIN SITE ---
-      # This takes everything inside your 'main-site' folder and pushes it
-      - name: Deploy Main Site via rsync
-        uses: AEnterprise/rsync-deploy@v1.0.2
-        env:
-          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-avz --delete"
-          SERVER_PORT: "22"
-          FOLDER: "./main-site/" # The folder in your GitHub repo
-          SERVER_IP: ${{ secrets.SERVER_HOST }}
-          USERNAME: ${{ secrets.SERVER_USER }}
-          SERVER_DESTINATION: "/srv/projects/websites/homepage" # The folder on your server
+      - name: Deploy Main Site via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "main-site/*"
+          target: "/srv/projects/websites/homepage"
+          strip_components: 1 # Prevents creating a "main-site" folder inside example.com
 
       # --- DEPLOY SUBDOMAIN APP ---
-      # This takes everything inside your 'subdomain-app-test' folder and pushes it
-      - name: Deploy App 2 via rsync
-        uses: AEnterprise/rsync-deploy@v1.0.2
-        env:
-          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-avz --delete"
-          SERVER_PORT: "22"
-          FOLDER: "./subdomain-app-test/" # The folder in your GitHub repo
-          SERVER_IP: ${{ secrets.SERVER_HOST }}
-          USERNAME: ${{ secrets.SERVER_USER }}
-          SERVER_DESTINATION: "/srv/projects/websites/testproject" # The folder on your server
+      - name: Deploy App 2 via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "subdomain-app-test/*"
+          target: "/srv/projects/websites/testproject"
+          strip_components: 1
