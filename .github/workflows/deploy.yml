@@ -1,0 +1,54 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-index: "20" # Match your local Node version
+
+      # --- BUILD MAIN SITE ---
+      - name: Install & Build Main Site
+        run: |
+          cd main-site
+          npm install
+          npm run build  # This usually creates a 'dist' or 'build' folder
+
+      - name: Deploy Main Site via rsync
+        uses: AEnterprise/rsync-deploy@v1.0.2
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-avz --delete"
+          SERVER_PORT: "22"
+          FOLDER: "./main-site/dist/" # Adjust 'dist' to your framework's build folder
+          SERVER_IP: ${{ secrets.SERVER_HOST }}
+          USERNAME: ${{ secrets.SERVER_USER }}
+          SERVER_DESTINATION: "/srv/www/://example.com"
+
+      # --- BUILD SUBDOMAIN APP ---
+      - name: Install & Build App 2
+        run: |
+          cd subdomain-app-test
+          npm install
+          npm run build
+
+      - name: Deploy App 2 via rsync
+        uses: AEnterprise/rsync-deploy@v1.0.2
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-avz --delete"
+          SERVER_PORT: "22"
+          FOLDER: "./subdomain-app-test/dist/"
+          SERVER_IP: ${{ secrets.SERVER_HOST }}
+          USERNAME: ${{ secrets.SERVER_USER }}
+          SERVER_DESTINATION: "/srv/www/app.://example.com"
