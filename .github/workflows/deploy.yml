@@ -14,13 +14,13 @@ jobs:
 
       # --- DEPLOY MAIN SITE ---
       # This takes everything inside your 'main-site' folder and pushes it
-       Pentest-name: Deploy Main Site via rsync
+      - name: Deploy Main Site via rsync
         uses: AEnterprise/rsync-deploy@v1.0.2
         env:
           DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-avz --delete"
           SERVER_PORT: "22"
-          FOLDER: "./main-site/"  # The folder in your GitHub repo
+          FOLDER: "./main-site/" # The folder in your GitHub repo
           SERVER_IP: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
           SERVER_DESTINATION: "/srv/projects/websites/homepage" # The folder on your server
@@ -33,7 +33,7 @@ jobs:
           DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-avz --delete"
           SERVER_PORT: "22"
-          FOLDER: "./subdomain-app-test/"  # The folder in your GitHub repo
+          FOLDER: "./subdomain-app-test/" # The folder in your GitHub repo
           SERVER_IP: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
           SERVER_DESTINATION: "/srv/projects/websites/testproject" # The folder on your server
