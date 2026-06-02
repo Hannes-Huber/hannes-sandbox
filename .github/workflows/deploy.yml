@@ -30,7 +30,7 @@ jobs:
           DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-avz --delete"
           SERVER_PORT: "22"
-          FOLDER: "./main-site/dist/" # Adjust 'dist' to your framework's build folder
+          FOLDER: "./main-site" # Adjust 'dist' to your framework's build folder
           SERVER_IP: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
           SERVER_DESTINATION: "/srv/projects/websites/homepage"
@@ -48,7 +48,7 @@ jobs:
           DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-avz --delete"
           SERVER_PORT: "22"
-          FOLDER: "./subdomain-app-test/dist/"
+          FOLDER: "./subdomain-app-test"
           SERVER_IP: ${{ secrets.SERVER_HOST }}
           USERNAME: ${{ secrets.SERVER_USER }}
           SERVER_DESTINATION: "/srv/projects/websites/testproject"
