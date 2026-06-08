@@ -4,6 +4,7 @@ import { tagToPath } from "../utils/tags";
 
 export default function BlogPostPage({ post }) {
   if (!post) return <NotFound />;
+  const PostContent = post.Content;
 
   return (
     <article className="article-page">
@@ -25,9 +26,7 @@ export default function BlogPostPage({ post }) {
         </div>
       </header>
       <div className="article-body">
-        {post.body.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
+        <PostContent />
       </div>
     </article>
   );
