@@ -77,12 +77,12 @@
 }
 
 .site-nav a:hover,
-.site-nav a[aria-current='page'],
+.site-nav a[aria-current="page"],
 .section-heading a:hover,
 .back-link:hover,
 .button-link:hover,
 .pagination a:hover,
-.pagination a[aria-current='page'] {
+.pagination a[aria-current="page"] {
   background: #0a0a0a;
   color: #fbfbf7;
 }
@@ -223,15 +223,34 @@ main {
 .tag-row {
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: auto;
+  margin-top: 1rem;
 }
 
-.tag-row span {
+.tag-row span,
+.tag-row a {
   border: 1px solid #0a0a0a;
   padding: 3px 8px;
   background: #f2f2ec;
+  color: #0a0a0a;
   font-size: 0.76rem;
   font-weight: 800;
+  text-decoration: none;
+}
+
+.tag-row button {
+  border: 1px solid #0a0a0a;
+  padding: 3px 8px;
+  background: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tag-row a:hover,
+.tag-row a[aria-current="page"],
+.filter-bar button:hover {
+  background: #0a0a0a;
+  color: #fbfbf7;
 }
 
 .page-intro,

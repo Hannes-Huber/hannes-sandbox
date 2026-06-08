@@ -1,5 +1,6 @@
 import NotFound from "./NotFound";
 import formatDate from "../utils/formatDate";
+import { tagToPath } from "../utils/tags";
 
 export default function BlogPostPage({ post }) {
   if (!post) return <NotFound />;
@@ -17,7 +18,9 @@ export default function BlogPostPage({ post }) {
         <p>{post.excerpt}</p>
         <div className="tag-row">
           {post.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
+            <a href={`#/blog/tag/${tagToPath(tag)}`} key={tag}>
+              {tag}
+            </a>
           ))}
         </div>
       </header>

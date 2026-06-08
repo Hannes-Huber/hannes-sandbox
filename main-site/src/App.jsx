@@ -10,6 +10,7 @@ import BlogPostPage from "./pages/BlogPost";
 import CreativeCodePage from "./pages/CreativeCode";
 import HomePage from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import { pathToTags } from "./utils/tags";
 
 function getPageFromRoute(route, prefix) {
   const value = Number(route.replace(prefix, ""));
@@ -23,8 +24,35 @@ function App() {
 
   if (cleanRoute === "/blog") {
     page = <BlogListPage page={1} />;
+  } else if (cleanRoute.startsWith("/blog?tag=")) {
+    page = (
+      <BlogListPage
+        page={1}
+        selectedTags={pathToTags(cleanRoute.replace("/blog?tag=", ""))}
+      />
+    );
   } else if (cleanRoute.startsWith("/blog/page/")) {
     page = <BlogListPage page={getPageFromRoute(cleanRoute, "/blog/page/")} />;
+  } else if (
+    cleanRoute.startsWith("/blog/tag/") &&
+    cleanRoute.includes("/page/")
+  ) {
+    const [tagPath, pagePath] = cleanRoute
+      .replace("/blog/tag/", "")
+      .split("/page/");
+    page = (
+      <BlogListPage
+        page={Number(pagePath) || 1}
+        selectedTags={pathToTags(tagPath)}
+      />
+    );
+  } else if (cleanRoute.startsWith("/blog/tag/")) {
+    page = (
+      <BlogListPage
+        page={1}
+        selectedTags={pathToTags(cleanRoute.replace("/blog/tag/", ""))}
+      />
+    );
   } else if (cleanRoute.startsWith("/blog/")) {
     page = (
       <BlogPostPage
