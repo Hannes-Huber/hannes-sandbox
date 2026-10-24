@@ -1,0 +1,33 @@
+import NotFound from "./NotFound";
+import formatDate from "../utils/formatDate";
+import { tagToPath } from "../utils/tags";
+
+export default function BlogPostPage({ post }) {
+  if (!post) return <NotFound />;
+  const PostContent = post.Content;
+
+  return (
+    <article className="article-page">
+      <a className="back-link" href="#/blog">
+        Zuruck zum Blog
+      </a>
+      <header className="article-header">
+        <p className="kicker">
+          {formatDate(post.date)} / {post.readingTime}
+        </p>
+        <h1>{post.title}</h1>
+        <p>{post.excerpt}</p>
+        <div className="tag-row">
+          {post.tags.map((tag) => (
+            <a href={`#/blog/tag/${tagToPath(tag)}`} key={tag}>
+              {tag}
+            </a>
+          ))}
+        </div>
+      </header>
+      <div className="article-body">
+        <PostContent />
+      </div>
+    </article>
+  );
+}
