@@ -246,6 +246,18 @@ const navItems = [
 const postsPerPage = 4
 const projectsPerPage = 4
 
+function tagToPath(tag) {
+  return encodeURIComponent(tag.toLowerCase())
+}
+
+function pathToTag(pathTag) {
+  return decodeURIComponent(pathTag)
+}
+
+function postHasTag(post, routeTag) {
+  return post.tags.some((tag) => tag.toLowerCase() === routeTag.toLowerCase())
+}
+
 function formatDate(date) {
   return new Intl.DateTimeFormat('de-DE', {
     day: '2-digit',
@@ -346,28 +358,47 @@ function HomePage() {
   )
 }
 
-function BlogListPage({ page }) {
-  const totalPages = Math.ceil(posts.length / postsPerPage)
+function BlogListPage({ page, tag }) {
+  const filteredPosts = tag ? posts.filter((post) => postHasTag(post, tag)) : posts
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / postsPerPage))
   const currentPage = Math.min(Math.max(page, 1), totalPages)
-  const visiblePosts = posts.slice(
+  const visiblePosts = filteredPosts.slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage,
   )
+  const matchingTag = posts
+    .flatMap((post) => post.tags)
+    .find((postTag) => postTag.toLowerCase() === tag?.toLowerCase())
+  const displayTag = matchingTag || tag
+  const title = tag
+    ? `Alle Beitrage mit dem Tag "${displayTag}".`
+    : 'Texte, Notizen und Arbeitsgedanken.'
+  const text = tag
+    ? `${filteredPosts.length} ${filteredPosts.length === 1 ? 'Beitrag' : 'Beitrage'} in dieser Auswahl.`
+    : 'Eine paginierte Beitragsliste, bereit fur langere Essays, kurze Updates und wiederverwendbare Detailseiten.'
+  const paginationBase = tag
+    ? `#/blog/tag/${tagToPath(displayTag)}/page/`
+    : '#/blog/page/'
 
   return (
     <section className="listing-page">
       <PageIntro
-        eyebrow="Blog"
-        title="Texte, Notizen und Arbeitsgedanken."
-        text="Eine paginierte Beitragsliste, bereit fur langere Essays, kurze Updates und wiederverwendbare Detailseiten."
+        eyebrow={tag ? 'Blog / Tag' : 'Blog'}
+        title={title}
+        text={text}
       />
+      {tag && (
+        <a className="back-link" href="#/blog">
+          Alle Beitrage anzeigen
+        </a>
+      )}
       <div className="post-list">
         {visiblePosts.map((post) => (
           <PostCard key={post.slug} post={post} featured />
         ))}
       </div>
       <Pagination
-        base="#/blog/page/"
+        base={paginationBase}
         currentPage={currentPage}
         totalPages={totalPages}
       />
@@ -389,7 +420,9 @@ function BlogPostPage({ post }) {
         <p>{post.excerpt}</p>
         <div className="tag-row">
           {post.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
+            <a href={`#/blog/tag/${tagToPath(tag)}`} key={tag}>
+              {tag}
+            </a>
           ))}
         </div>
       </header>
@@ -606,6 +639,11 @@ function App() {
     page = <BlogListPage page={1} />
   } else if (cleanRoute.startsWith('/blog/page/')) {
     page = <BlogListPage page={getPageFromRoute(cleanRoute, '/blog/page/')} />
+  } else if (cleanRoute.startsWith('/blog/tag/') && cleanRoute.includes('/page/')) {
+    const [tagPath, pagePath] = cleanRoute.replace('/blog/tag/', '').split('/page/')
+    page = <BlogListPage page={Number(pagePath) || 1} tag={pathToTag(tagPath)} />
+  } else if (cleanRoute.startsWith('/blog/tag/')) {
+    page = <BlogListPage page={1} tag={pathToTag(cleanRoute.replace('/blog/tag/', ''))} />
   } else if (cleanRoute.startsWith('/blog/')) {
     page = <BlogPostPage post={posts.find((post) => `/blog/${post.slug}` === cleanRoute)} />
   } else if (cleanRoute === '/creative-code') {

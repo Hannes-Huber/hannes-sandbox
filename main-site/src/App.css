@@ -226,12 +226,20 @@ main {
   margin-top: auto;
 }
 
-.tag-row span {
+.tag-row span,
+.tag-row a {
   border: 1px solid #0a0a0a;
   padding: 3px 8px;
   background: #f2f2ec;
+  color: #0a0a0a;
   font-size: 0.76rem;
   font-weight: 800;
+  text-decoration: none;
+}
+
+.tag-row a:hover {
+  background: #0a0a0a;
+  color: #fbfbf7;
 }
 
 .page-intro,
