@@ -191,6 +191,13 @@ main {
   text-decoration: none;
 }
 
+.post-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-bottom: 2px solid #0a0a0a;
+  object-fit: cover;
+}
+
 .post-card-wide a {
   min-height: 260px;
 }
@@ -322,6 +329,15 @@ main {
 .article-page .back-link,
 .project-page .back-link {
   margin-bottom: 28px;
+}
+
+.article-featured-image {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  margin-top: 28px;
+  border: 2px solid #0a0a0a;
+  object-fit: cover;
 }
 
 .article-body {

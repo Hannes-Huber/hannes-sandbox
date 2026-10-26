@@ -249,7 +249,7 @@ sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy
 ```
 
-Öffne `https://cms.hannes-sandbox.com` im Browser und beende den WordPress-Installationsassistenten. Lege dabei dein eigenes Administratorkonto an. Dieses Administratorkonto bleibt privat und wird nicht an den Redakteur weitergegeben.
+Öffne direkt `https://cms.hannes-sandbox.com/wp-admin/install.php` im Browser und beende dort den WordPress-Installationsassistenten. Lege dabei dein eigenes Administratorkonto an. Dieses Administratorkonto bleibt privat und wird nicht an den Redakteur weitergegeben.
 
 ### Eingeschränkte Redakteursrolle installieren
 
@@ -291,7 +291,7 @@ VITE_WORDPRESS_API_URL=https://cms.hannes-sandbox.com/wp-json
 
 Für GitHub Actions lege unter **Settings → Secrets and variables → Actions → Variables** eine Repository-Variable `VITE_WORDPRESS_API_URL` mit demselben API-Basiswert an. Der Build-Schritt übergibt diese Variable an Vite. Sie ist keine geheime Zugangsinformation.
 
-Starte lokal Vite neu, nachdem du `.env.local` angelegt hast. Beim nächsten Build und Deployment bezieht die Website Blogbeiträge, Tags und WordPress-Seiten aus dem CMS. Beiträge erscheinen in der Blogliste, auf der Homepage und unter `#/blog/<slug>`. Eigene WordPress-Seiten erscheinen automatisch als Links im Bereich „Seiten“ auf der Homepage und unter `#/pages/<slug>`; beispielsweise führt eine WordPress-Seite mit dem Slug `game1` zu `https://hannes-sandbox.com/#/pages/game1`.
+Starte lokal Vite neu, nachdem du `.env.local` angelegt hast. Beim nächsten Build und Deployment bezieht die Website Blogbeiträge, Tags, Beitragsbilder und WordPress-Seiten aus dem CMS. Das WordPress-Beitragsbild wird auf den Blogkarten und der Beitragsdetailseite angezeigt. Beiträge erscheinen in der Blogliste, auf der Homepage und unter `#/blog/<slug>`. Eigene WordPress-Seiten erscheinen automatisch als Links im Bereich „Seiten“ auf der Homepage und unter `#/pages/<slug>`; beispielsweise führt eine WordPress-Seite mit dem Slug `game1` zu `https://hannes-sandbox.com/#/pages/game1`.
 
 Die WordPress-Seite ist damit als Content-Quelle in die Website eingebunden, nicht als iframe. Das Schreiben geschieht im WordPress-Backend; die öffentliche Website zeigt nur veröffentlichte Inhalte. Nicht veröffentlichte Entwürfe werden nicht über die öffentliche API angezeigt. Die aktuelle App lädt pro Inhaltstyp höchstens 100 Einträge in einem Abruf.
 

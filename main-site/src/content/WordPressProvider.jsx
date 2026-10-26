@@ -10,6 +10,7 @@ function htmlToText(html) {
 
 function toPost(item) {
   const terms = item._embedded?.["wp:term"]?.flat() || [];
+  const featuredMedia = item._embedded?.["wp:featuredmedia"]?.[0];
   const tags = terms
     .filter((term) => term.taxonomy === "post_tag")
     .map((term) => term.name);
@@ -24,6 +25,19 @@ function toPost(item) {
     readingTime: `${Math.max(1, Math.ceil(words / 200))} min`,
     excerpt: htmlToText(item.excerpt?.rendered || ""),
     tags,
+    featuredImage: featuredMedia
+      ? {
+          url:
+            featuredMedia.media_details?.sizes?.large?.source_url ||
+            featuredMedia.source_url,
+          alt: htmlToText(
+            featuredMedia.alt_text ||
+              featuredMedia.title?.rendered ||
+              item.title?.rendered ||
+              "",
+          ),
+        }
+      : null,
     html: item.content?.rendered || "",
   };
 }

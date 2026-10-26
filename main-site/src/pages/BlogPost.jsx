@@ -29,6 +29,13 @@ export default function BlogPostPage({ slug }) {
           ))}
         </div>
       </header>
+      {post.featuredImage?.url && (
+        <img
+          className="article-featured-image"
+          src={post.featuredImage.url}
+          alt={post.featuredImage.alt}
+        />
+      )}
       <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
     </article>
   );
