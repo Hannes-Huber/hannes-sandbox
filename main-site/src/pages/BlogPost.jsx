@@ -1,10 +1,14 @@
 import NotFound from "./NotFound";
 import formatDate from "../utils/formatDate";
 import { tagToPath } from "../utils/tags";
+import useWordPressContent from "../content/useWordPressContent";
 
-export default function BlogPostPage({ post }) {
+export default function BlogPostPage({ slug }) {
+  const { posts, status, error } = useWordPressContent();
+  const post = posts.find((item) => item.slug === slug);
+  if (status === "loading") return <section className="article-page">Beitrag wird geladen …</section>;
+  if (status !== "ready") return <section className="article-page">{error || "WordPress ist nicht konfiguriert. Bitte VITE_WORDPRESS_API_URL setzen."}</section>;
   if (!post) return <NotFound />;
-  const PostContent = post.Content;
 
   return (
     <article className="article-page">
@@ -25,9 +29,7 @@ export default function BlogPostPage({ post }) {
           ))}
         </div>
       </header>
-      <div className="article-body">
-        <PostContent />
-      </div>
+      <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
     </article>
   );
 }

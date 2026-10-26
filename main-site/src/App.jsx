@@ -2,7 +2,7 @@ import "./App.css";
 import ProjectPage from "./composables/ProjectPage";
 import Shell from "./composables/Shell";
 import useRoute from "./composables/useRoute";
-import { posts } from "./content/posts";
+import WordPressProvider from "./content/WordPressProvider";
 import { projects } from "./content/projects";
 import AboutPage from "./pages/About";
 import BlogListPage from "./pages/BlogList";
@@ -10,6 +10,7 @@ import BlogPostPage from "./pages/BlogPost";
 import CreativeCodePage from "./pages/CreativeCode";
 import HomePage from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import WordPressPage from "./pages/WordPressPage";
 import { pathToTags } from "./utils/tags";
 
 function getPageFromRoute(route, prefix) {
@@ -17,7 +18,7 @@ function getPageFromRoute(route, prefix) {
   return Number.isFinite(value) && value > 0 ? value : 1;
 }
 
-function App() {
+function AppRoutes() {
   const route = useRoute();
   const cleanRoute = route.replace(/\/$/, "") || "/";
   let page = <HomePage />;
@@ -55,9 +56,7 @@ function App() {
     );
   } else if (cleanRoute.startsWith("/blog/")) {
     page = (
-      <BlogPostPage
-        post={posts.find((post) => `/blog/${post.slug}` === cleanRoute)}
-      />
+      <BlogPostPage slug={cleanRoute.replace("/blog/", "")} />
     );
   } else if (cleanRoute === "/creative-code") {
     page = <CreativeCodePage page={1} />;
@@ -77,11 +76,21 @@ function App() {
     );
   } else if (cleanRoute === "/about") {
     page = <AboutPage />;
+  } else if (cleanRoute.startsWith("/pages/")) {
+    page = <WordPressPage slug={cleanRoute.replace("/pages/", "")} />;
   } else if (cleanRoute !== "/") {
     page = <NotFound />;
   }
 
   return <Shell route={cleanRoute}>{page}</Shell>;
+}
+
+function App() {
+  return (
+    <WordPressProvider>
+      <AppRoutes />
+    </WordPressProvider>
+  );
 }
 
 export default App;

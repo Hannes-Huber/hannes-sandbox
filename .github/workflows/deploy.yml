@@ -30,6 +30,8 @@ jobs:
         run: npm run lint
 
       - name: Build
+        env:
+          VITE_WORDPRESS_API_URL: ${{ vars.VITE_WORDPRESS_API_URL }}
         run: npm run build
 
       - name: Upload main site artifact

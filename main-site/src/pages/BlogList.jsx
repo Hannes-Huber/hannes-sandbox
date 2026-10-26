@@ -1,7 +1,7 @@
 import PageIntro from "../PageIntro";
 import Pagination from "../composables/Pagination";
 import PostCard from "../composables/PostCard";
-import { posts } from "../content/posts";
+import useWordPressContent from "../content/useWordPressContent";
 import {
   getDisplayTags,
   postHasAnyTag,
@@ -16,6 +16,15 @@ function getFilterHref(tags) {
 }
 
 export default function BlogListPage({ page, selectedTags = [] }) {
+  const { posts, status, error } = useWordPressContent();
+  if (status !== "ready") {
+    const message = status === "loading"
+      ? "Beiträge werden geladen …"
+      : status === "unconfigured"
+        ? "WordPress ist noch nicht konfiguriert. Lege VITE_WORDPRESS_API_URL an und baue die Website erneut."
+        : error || "WordPress-Inhalte konnten nicht geladen werden.";
+    return <section className="listing-page"><PageIntro eyebrow="Blog" title="Beiträge aus WordPress" text={message} /></section>;
+  }
   const hasSelectedTags = selectedTags.length > 0;
   const filteredPosts = hasSelectedTags
     ? posts.filter((post) => postHasAnyTag(post, selectedTags))
