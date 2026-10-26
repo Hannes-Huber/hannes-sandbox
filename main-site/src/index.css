@@ -1,6 +1,12 @@
 :root {
-  color: #0a0a0a;
-  background: #fbfbf7;
+  --ink: #25312e;
+  --muted: #75817d;
+  --line: #e8eeeb;
+  --accent-coral: #ef8069;
+  --accent-blue: #88c5df;
+  --accent-lime: #c2d96d;
+  color: var(--ink);
+  background: #ffffff;
   font-family:
     Inter,
     ui-sans-serif,
@@ -22,7 +28,7 @@
 }
 
 html {
-  background: #fbfbf7;
+  background: #ffffff;
 }
 
 body {
