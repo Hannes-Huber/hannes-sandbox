@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bloch-Sphären-Visualizer</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#5d6577;--bd:#dde1ea;--ac:#6d4aff;--c1:#e0457b;--c2:#1a9e8f;--c3:#d98a00;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10131b;--card:#181c27;--tx:#e8ebf3;--mu:#9aa3b8;--bd:#2b3142;--ac:#9a82ff;--c1:#ff6b9d;--c2:#3ecdb9;--c3:#ffb830;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10131b;--card:#181c27;--tx:#e8ebf3;--mu:#9aa3b8;--bd:#2b3142;--ac:#9a82ff;--c1:#ff6b9d;--c2:#3ecdb9;--c3:#ffb830;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:20px 16px 4px;max-width:1100px;margin:auto}
+h1{margin:0;font-size:1.6rem}header p{margin:4px 0 0;color:var(--mu)}
+main{max-width:1100px;margin:auto;padding:12px 16px 40px;display:grid;gap:16px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+@media(max-width:820px){main{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 16px}
+.card h2{margin:0 0 8px;font-size:1.05rem}
+canvas{width:100%;aspect-ratio:1;display:block;touch-action:none;cursor:grab;border-radius:10px}
+.hint{font-size:.82rem;color:var(--mu);text-align:center;margin:4px 0 0}
+.row{display:grid;grid-template-columns:auto 1fr 5.2rem;gap:10px;align-items:center;margin:8px 0}
+.row input[type=range]{width:100%;accent-color:var(--ac)}
+input[type=number],select{font:inherit;padding:4px 6px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);width:100%}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{font:inherit;font-size:.9rem;padding:5px 10px;border:1px solid var(--bd);border-radius:999px;background:var(--bg);color:var(--tx);cursor:pointer}
+button:hover{border-color:var(--ac)}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+.f{font-family:Georgia,"Times New Roman",serif;font-size:1.08rem;background:var(--bg);border-radius:10px;padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:nowrap}
+.f i{color:var(--ac)}.t{color:var(--c1)}.p2{color:var(--c2)}.z{color:var(--c3)}
+.bar{height:22px;border-radius:6px;background:var(--bg);overflow:hidden;margin:4px 0}
+.bar div{height:100%;color:#fff;font-size:.8rem;padding:0 8px;line-height:22px;white-space:nowrap;transition:width .15s}
+table{border-collapse:collapse;width:100%;font-size:.92rem}td{padding:3px 6px;border-bottom:1px solid var(--bd)}td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.full{grid-column:1/-1}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pane{display:none}.pane.on{display:block}
+.pane p{margin:6px 0}small{color:var(--mu)}
+</style>
+</head>
+<body>
+<header>
+<h1>⚛️ Bloch-Sphären-Visualizer</h1>
+<p>Stelle Polarwinkel θ und Azimut φ ein und sieh, wie daraus ein Spin-½-Zustand (Qubit) entsteht.</p>
+</header>
+<main>
+<section class="card">
+<canvas id="cv" width="700" height="700"></canvas>
+<p class="hint">Mit Maus oder Finger ziehen, um die Kugel zu drehen.</p>
+</section>
+
+<section style="display:grid;gap:16px;align-content:start">
+<div class="card">
+<h2>Parameter</h2>
+<div class="row"><span class="t">θ (Polar)</span><input id="th" type="range" min="0" max="180" step="1" value="60"><input id="thn" type="number" min="0" max="180" step="1"></div>
+<div class="row"><span class="p2">φ (Azimut)</span><input id="ph" type="range" min="0" max="360" step="1" value="45"><input id="phn" type="number" min="0" max="360" step="1"></div>
+<div class="btns" id="presets"></div>
+</div>
+
+<div class="card">
+<h2>Zustand live</h2>
+<div class="f" id="psi"></div>
+<table id="tab"></table>
+<div style="margin-top:8px">
+<small>Messwahrscheinlichkeit in z-Richtung</small>
+<div class="bar"><div id="b0" style="background:var(--c3)"></div></div>
+<div class="bar"><div id="b1" style="background:var(--c1)"></div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Messung simulieren (Stern-Gerlach)</h2>
+<div class="row" style="grid-template-columns:auto 1fr auto"><span>Achse</span>
+<select id="ax"><option value="2">z</option><option value="0">x</option><option value="1">y</option></select>
+<button class="p" id="meas">100× messen</button></div>
+<div id="mres" class="f" style="white-space:normal">Noch keine Messung.</div>
+</div>
+</section>
+
+<section class="card full">
+<h2>Erklärung</h2>
+<div class="tabs" id="tabs"></div>
+
+<div class="pane" data-n="Was ist Spin?">
+<p>Spin ist eine Eigenschaft von Teilchen, die wie ein winziger Drehimpuls wirkt, aber kein „Drehen“ im Alltagssinn ist. Ein Elektron hat Spin ½: Misst man ihn entlang einer beliebigen Achse, findet man <b>nur zwei Ergebnisse</b>: <b>↑</b> mit +ħ/2 oder <b>↓</b> mit −ħ/2. Nie etwas dazwischen.</p>
+<p>Im Stern-Gerlach-Versuch fliegen Silberatome durch ein inhomogenes Magnetfeld und spalten sich in genau zwei Strahlen auf. Die Messachse ist die Richtung des Magnetfelds.</p>
+<p>Vor der Messung kann der Spin aber in einer <b>Überlagerung</b> von ↑ und ↓ stehen. Diesen Zustand beschreibt man als Pfeil auf der Bloch-Kugel. Der Pfeil zeigt in die Richtung, in der eine Spinmessung <i>sicher</i> „↑“ ergäbe.</p>
+</div>
+
+<div class="pane" data-n="Der Zustand |ψ⟩">
+<p>Jeder reine Spin-½-Zustand ist eine Überlagerung der Basiszustände |0⟩ = ↑ und |1⟩ = ↓:</p>
+<div class="f">|ψ⟩ = α|0⟩ + β|1⟩ &nbsp;mit&nbsp; |α|² + |β|² = 1</div>
+<p>α und β sind komplexe Zahlen (Amplituden). Das sind vier reelle Zahlen, die Normierung nimmt eine weg, und die globale Phase ist nicht messbar und nimmt noch eine weg. Es bleiben <b>zwei</b> Parameter: genau θ und φ.</p>
+<div class="f">|ψ⟩ = cos(<span class="t">θ</span>/2)|0⟩ + e<sup>i<span class="p2">φ</span></sup> sin(<span class="t">θ</span>/2)|1⟩</div>
+<p><b>Warum θ/2?</b> Die Zustände |0⟩ und |1⟩ stehen mathematisch senkrecht aufeinander, liegen auf der Kugel aber an gegenüberliegenden Polen (180° Abstand). Der Winkel wird halbiert, damit beides zusammenpasst.</p>
+</div>
+
+<div class="pane" data-n="Die Winkel θ und φ">
+<p><b class="t">θ (Polarwinkel, 0° bis 180°)</b> gemessen von der +z-Achse nach unten. Er steuert das <i>Mischungsverhältnis</i>:</p>
+<div class="f">P(↑) = cos²(<span class="t">θ</span>/2) &nbsp;&nbsp; P(↓) = sin²(<span class="t">θ</span>/2)</div>
+<p>θ = 0° ist reines |0⟩, θ = 180° reines |1⟩, θ = 90° ist 50 : 50.</p>
+<p><b class="p2">φ (Azimut, 0° bis 360°)</b> dreht um die z-Achse. Er ist die <i>relative Phase</i> zwischen den beiden Anteilen. Auf die z-Messung hat φ keinen Einfluss, wohl aber auf Messungen in x- und y-Richtung (Interferenz!).</p>
+<p>Am Nordpol und Südpol ist φ bedeutungslos, denn dort gibt es nur einen Anteil, dessen Phase global und damit unbeobachtbar ist.</p>
+</div>
+
+<div class="pane" data-n="Bloch-Vektor & Erwartungswerte">
+<p>Aus den Winkeln wird ein Einheitsvektor in kartesischen Koordinaten:</p>
+<div class="f">x = sin<span class="t">θ</span>·cos<span class="p2">φ</span> &nbsp; y = sin<span class="t">θ</span>·sin<span class="p2">φ</span> &nbsp; z = cos<span class="t">θ</span></div>
+<p>Diese Komponenten sind die Erwartungswerte der Pauli-Matrizen σ<sub>x</sub>, σ<sub>y</sub>, σ<sub>z</sub>:</p>
+<div class="f">⟨σ<sub>k</sub>⟩ = ⟨ψ|σ<sub>k</sub>|ψ⟩ = n<sub>k</sub></div>
+<p>Der Spin-Erwartungswert ist ⟨S<sub>k</sub>⟩ = (ħ/2)·n<sub>k</sub>. Zeigt der Pfeil auf Äquator-Punkt +x, so liefert eine x-Messung sicher ↑, aber eine z-Messung ist ein Münzwurf.</p>
+<p>Wichtige Punkte: <b>|0⟩</b> (Nordpol), <b>|1⟩</b> (Südpol), <b>|+⟩, |−⟩</b> (±x), <b>|+i⟩, |−i⟩</b> (±y). Gegenüberliegende Punkte sind orthogonale Zustände.</p>
+</div>
+
+<div class="pane" data-n="Messung allgemein">
+<p>Misst man entlang einer Achse n̂ (Einheitsvektor), gilt für den Bloch-Vektor r̂:</p>
+<div class="f">P(↑ entlang n̂) = (1 + r̂·n̂) / 2</div>
+<p>Je kleiner der Winkel zwischen Zustandsvektor und Messachse, desto wahrscheinlicher ↑. Nach der Messung „kollabiert“ der Zustand auf den Pol dieser Achse. Probiere es mit dem Messsimulator oben: Bei Zustand |+⟩ ergibt die x-Achse stets 100 : 0, die z-Achse etwa 50 : 50.</p>
+<p>Die Bloch-Kugel gilt für Spin ½ und jedes andere Zwei-Niveau-System: Photonenpolarisation, supraleitende Qubits, Ionen in Fallen.</p>
+</div>
+</section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const cv=$("cv"),ctx=cv.getContext("2d");
+let th=60,ph=45,yaw=-0.6,pit=0.35,drag=null;
+const rad=d=>d*Math.PI/180;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+const PRE=[["|0⟩",0,0],["|1⟩",180,0],["|+⟩",90,0],["|−⟩",90,180],["|+i⟩",90,90],["|−i⟩",90,270]];
+PRE.forEach(p=>{const b=document.createElement("button");b.textContent=p[0];b.onclick=()=>set(p[1],p[2]);$("presets").appendChild(b)});
+
+const tabs=document.querySelectorAll(".pane");
+tabs.forEach((p,i)=>{const b=document.createElement("button");b.textContent=p.dataset.n;b.onclick=()=>show(i);$("tabs").appendChild(b)});
+function show(i){tabs.forEach((p,j)=>{p.classList.toggle("on",i===j);$("tabs").children[j].classList.toggle("on",i===j)})}
+show(0);
+
+function set(t,p){th=Math.min(180,Math.max(0,+t||0));ph=Math.min(360,Math.max(0,+p||0));update()}
+$("th").oninput=e=>set(e.target.value,ph);$("thn").oninput=e=>set(e.target.value,ph);
+$("ph").oninput=e=>set(th,e.target.value);$("phn").oninput=e=>set(th,e.target.value);
+
+const vec=()=>{const t=rad(th),p=rad(ph);return[Math.sin(t)*Math.cos(p),Math.sin(t)*Math.sin(p),Math.cos(t)]};
+const f=(v,d=3)=>(Math.abs(v)<5e-4?0:v).toFixed(d).replace("-","−");
+
+function update(){
+ $("th").value=$("thn").value=Math.round(th);$("ph").value=$("phn").value=Math.round(ph);
+ const t=rad(th),p=rad(ph),a=Math.cos(t/2),br=Math.sin(t/2)*Math.cos(p),bi=Math.sin(t/2)*Math.sin(p);
+ const [x,y,z]=vec(),p0=a*a,p1=1-p0;
+ const cplx=(r,i)=>Math.abs(i)<5e-4?f(r):`(${f(r)} ${i<0?"−":"+"} ${f(Math.abs(i))}i)`;
+ $("psi").innerHTML=`|ψ⟩ = <b>${f(a)}</b>|0⟩ + <b>${cplx(br,bi)}</b>|1⟩`;
+ $("tab").innerHTML=`
+ <tr><td>Amplitude α = cos(θ/2)</td><td>${f(a)}</td></tr>
+ <tr><td>Amplitude β = e<sup>iφ</sup>·sin(θ/2)</td><td>${cplx(br,bi)}</td></tr>
+ <tr><td>P(↑) = |α|²</td><td>${f(p0*100,1)} %</td></tr>
+ <tr><td>P(↓) = |β|²</td><td>${f(p1*100,1)} %</td></tr>
+ <tr><td>Bloch-Vektor (x, y, z)</td><td>(${f(x,2)}, ${f(y,2)}, ${f(z,2)})</td></tr>
+ <tr><td>⟨S<sub>z</sub>⟩ = (ħ/2)·z</td><td>${f(z/2,3)} ħ</td></tr>`;
+ $("b0").style.width=Math.max(p0*100,0)+"%";$("b0").textContent="↑ "+f(p0*100,1)+" %";
+ $("b1").style.width=Math.max(p1*100,0)+"%";$("b1").textContent="↓ "+f(p1*100,1)+" %";
+ draw();
+}
+
+/* 3D -> 2D */
+function proj([x,y,z]){
+ const c=Math.cos(yaw),s=Math.sin(yaw),cp=Math.cos(pit),sp=Math.sin(pit);
+ const x1=x*c-y*s,y1=x*s+y*c;
+ return{x:x1,y:-(z*cp+y1*sp),d:y1*cp-z*sp};
+}
+function line(pts,col,w,dash,backFade=true){
+ const W=cv.width,R=W*0.34,C=W/2;
+ for(let i=0;i<pts.length-1;i++){
+  const a=proj(pts[i]),b=proj(pts[i+1]),back=(a.d+b.d)/2>0;
+  ctx.beginPath();ctx.moveTo(C+a.x*R,C+a.y*R);ctx.lineTo(C+b.x*R,C+b.y*R);
+  ctx.strokeStyle=col;ctx.lineWidth=w;ctx.globalAlpha=backFade&&back?0.25:1;ctx.setLineDash(dash||[]);ctx.stroke();
+ }
+ ctx.globalAlpha=1;ctx.setLineDash([]);
+}
+function txt(s,p3,col,dx=0,dy=0,sz=26){
+ const W=cv.width,R=W*0.34,C=W/2,q=proj(p3);
+ ctx.font=`600 ${sz}px system-ui,sans-serif`;ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";
+ ctx.fillText(s,C+q.x*R+dx,C+q.y*R+dy);
+}
+const circ=(f,n=72)=>Array.from({length:n+1},(_,i)=>f(2*Math.PI*i/n));
+
+function draw(){
+ const W=cv.width,R=W*0.34,C=W/2;
+ ctx.clearRect(0,0,W,W);
+ const mu=css("--mu"),bd=css("--bd"),tx=css("--tx"),c1=css("--c1"),c2=css("--c2"),c3=css("--c3"),ac=css("--ac");
+ /* Kugelumriss */
+ ctx.beginPath();ctx.arc(C,C,R,0,7);ctx.fillStyle=ac;ctx.globalAlpha=0.06;ctx.fill();ctx.globalAlpha=1;
+ ctx.strokeStyle=bd;ctx.lineWidth=2;ctx.stroke();
+ line(circ(a=>[Math.cos(a),Math.sin(a),0]),mu,2);
+ line(circ(a=>[Math.cos(a),0,Math.sin(a)]),bd,1.5);
+ line(circ(a=>[0,Math.cos(a),Math.sin(a)]),bd,1.5);
+ /* Achsen */
+ line([[-1.25,0,0],[1.25,0,0]],mu,1.5);line([[0,-1.25,0],[0,1.25,0]],mu,1.5);line([[0,0,-1.25],[0,0,1.25]],mu,1.5);
+ txt("|0⟩",[0,0,1.38],tx);txt("|1⟩",[0,0,-1.38],tx);
+ txt("|+⟩",[1.42,0,0],mu,0,0,22);txt("|−⟩",[-1.42,0,0],mu,0,0,22);
+ txt("|+i⟩",[0,1.45,0],mu,0,0,22);txt("|−i⟩",[0,-1.45,0],mu,0,0,22);
+ txt("x",[1.2,0,0],mu,0,-20,20);txt("y",[0,1.2,0],mu,0,-20,20);txt("z",[0,0,1.12],mu,18,0,20);
+ const v=vec(),t=rad(th),p=rad(ph);
+ /* Hilfslinien */
+ const foot=[v[0],v[1],0];
+ line([[0,0,0],foot],c2,3);
+ line([foot,v],c3,2.5,[8,8],false);
+ /* φ-Bogen */
+ if(th>1&&th<179&&ph>0.5) line(circ(a=>[0.35*Math.cos(a*p/(2*Math.PI)),0.35*Math.sin(a*p/(2*Math.PI)),0],40).map((q,i,arr)=>q),c2,4,null,false);
+ /* θ-Bogen */
+ if(th>0.5){const n=Math.max(8,Math.round(th/4));
+  const pts=Array.from({length:n+1},(_,i)=>{const u=t*i/n;return[0.45*Math.sin(u)*Math.cos(p),0.45*Math.sin(u)*Math.sin(p),0.45*Math.cos(u)]});
+  line(pts,c1,4,null,false);}
+ /* Zustandspfeil */
+ const o=proj([0,0,0]),e=proj(v),ex=C+e.x*R,ey=C+e.y*R;
+ ctx.strokeStyle=ac;ctx.fillStyle=ac;ctx.lineWidth=7;ctx.lineCap="round";
+ ctx.beginPath();ctx.moveTo(C,C);ctx.lineTo(ex,ey);ctx.stroke();
+ ctx.beginPath();ctx.arc(ex,ey,13,0,7);ctx.fill();
+ /* Labels */
+ const m=(a)=>[a[0]*0.62,a[1]*0.62,a[2]*0.62];
+ const tm=Math.min(t/2,Math.PI/2);
+ txt("θ",[0.62*Math.sin(t/2)*Math.cos(p),0.62*Math.sin(t/2)*Math.sin(p),0.62*Math.cos(t/2)],c1,0,0,28);
+ txt("φ",[0.5*Math.cos(p/2),0.5*Math.sin(p/2),0],c2,0,0,28);
+ ctx.font="600 22px system-ui,sans-serif";ctx.fillStyle=ac;ctx.textAlign="left";
+ ctx.fillText("ψ",ex+18,ey-14);
+}
+
+/* Interaktion */
+cv.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);cv.style.cursor="grabbing"});
+cv.addEventListener("pointermove",e=>{if(!drag)return;
+ yaw+=(e.clientX-drag.x)*0.01;pit=Math.max(-1.4,Math.min(1.4,pit+(e.clientY-drag.y)*0.01));drag={x:e.clientX,y:e.clientY};draw()});
+cv.addEventListener("pointerup",()=>{drag=null;cv.style.cursor="grab"});
+matchMedia("(prefers-color-scheme:dark)").addEventListener("change",draw);
+
+/* Messsimulation */
+$("meas").onclick=()=>{
+ const k=+$("ax").value,pu=(1+vec()[k])/2;let up=0;
+ for(let i=0;i<100;i++)if(Math.random()<pu)up++;
+ const nm=["x","y","z"][k];
+ $("mres").innerHTML=`Achse ${nm}: P(↑) = ${f(pu*100,1)} %<br><b>↑ ${up}×</b> &nbsp; <b>↓ ${100-up}×</b>
+ <div class="bar"><div style="width:${up}%;background:var(--c3)"></div></div>`;
+};
+update();
+</script>
+</body>
+</html>

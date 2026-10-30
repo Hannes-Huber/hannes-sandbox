@@ -11,6 +11,7 @@ import CreativeCodePage from "./pages/CreativeCode";
 import HomePage from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import WordPressPage from "./pages/WordPressPage";
+import BlochVisualizerPage from "./pages/BlochVisualizer";
 import { pathToTags } from "./utils/tags";
 
 function getPageFromRoute(route, prefix) {
@@ -74,12 +75,33 @@ function AppRoutes() {
         )}
       />
     );
+  } else if (cleanRoute === "/tools/quantencomputing/codex") {
+    page = <BlochVisualizerPage />;
+  } else if (cleanRoute === "/tools/quantencomputing/claude-code") {
+    page = (
+      <BlochVisualizerPage
+        src="/tools/quantencomputing/claude-code/index.html"
+        title="Claude Code Bloch-Sphären-Visualizer"
+      />
+    );
   } else if (cleanRoute === "/about") {
     page = <AboutPage />;
   } else if (cleanRoute.startsWith("/pages/")) {
     page = <WordPressPage slug={cleanRoute.replace("/pages/", "")} />;
   } else if (cleanRoute !== "/") {
     page = <NotFound />;
+  }
+
+  if (cleanRoute === "/tools/quantencomputing/codex") {
+    return <BlochVisualizerPage />;
+  }
+  if (cleanRoute === "/tools/quantencomputing/claude-code") {
+    return (
+      <BlochVisualizerPage
+        src="/tools/quantencomputing/claude-code/index.html"
+        title="Claude Code Bloch-Sphären-Visualizer"
+      />
+    );
   }
 
   return <Shell route={cleanRoute}>{page}</Shell>;
