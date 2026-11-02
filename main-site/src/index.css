@@ -51,3 +51,17 @@ a {
 iframe {
   border: 0;
 }
+
+:root[data-theme="classic"] {
+  --ink: #0a0a0a;
+  --muted: #52524f;
+  --line: #0a0a0a;
+  --accent-coral: #0a0a0a;
+  --accent-blue: #0a0a0a;
+  --accent-lime: #0a0a0a;
+  background: #fbfbf7;
+}
+
+:root[data-theme="classic"] body {
+  background: #fbfbf7;
+}

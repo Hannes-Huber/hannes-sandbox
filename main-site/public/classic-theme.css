@@ -1,0 +1,518 @@
+:root {
+  color: #0a0a0a;
+  background: #fbfbf7;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 16px;
+  font-synthesis: none;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #fbfbf7;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100svh;
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+iframe {
+  border: 0;
+}
+#root {
+  min-height: 100svh;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px clamp(18px, 5vw, 64px);
+  border-bottom: 2px solid #0a0a0a;
+  background: rgba(251, 251, 247, 0.94);
+  backdrop-filter: blur(14px);
+}
+
+.brand,
+.site-nav,
+.site-footer,
+.section-heading,
+.card-meta,
+.tag-row,
+.pagination {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 2px solid #0a0a0a;
+  background: #0a0a0a;
+  color: #fbfbf7;
+  font-weight: 900;
+}
+
+.brand strong {
+  font-size: 0.95rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.site-nav {
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.site-nav a,
+.section-heading a,
+.back-link,
+.button-link,
+.pagination a {
+  border: 2px solid #0a0a0a;
+  background: #fbfbf7;
+  color: #0a0a0a;
+  text-decoration: none;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.site-nav a {
+  padding: 7px 11px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"],
+.section-heading a:hover,
+.back-link:hover,
+.button-link:hover,
+.pagination a:hover,
+.pagination a[aria-current="page"] {
+  background: #0a0a0a;
+  color: #fbfbf7;
+}
+
+main {
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  padding: 0 clamp(18px, 5vw, 64px);
+}
+
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  gap: clamp(28px, 6vw, 88px);
+  align-items: end;
+  min-height: 62svh;
+  padding: clamp(72px, 11vw, 132px) 0 clamp(44px, 7vw, 80px);
+  border-bottom: 2px solid #0a0a0a;
+}
+
+.home-hero h1,
+.page-intro h1,
+.article-header h1 {
+  max-width: 980px;
+  margin: 0;
+  color: #0a0a0a;
+  font-size: clamp(3rem, 8vw, 7.4rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.9;
+}
+
+.home-hero > p,
+.page-intro > p,
+.article-header > p {
+  max-width: 620px;
+  margin: 0;
+  color: #3d3d38;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
+
+.kicker {
+  margin: 0 0 18px;
+  color: #0a0a0a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.section-block,
+.listing-page,
+.about-page,
+.project-page,
+.not-found {
+  padding: clamp(44px, 7vw, 84px) 0;
+}
+
+.section-block + .section-block {
+  border-top: 2px solid #0a0a0a;
+}
+
+.section-heading {
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3.6rem);
+  line-height: 1;
+}
+
+.section-heading a,
+.back-link,
+.button-link {
+  display: inline-flex;
+  flex: 0 0 auto;
+  padding: 9px 13px;
+  font-weight: 900;
+}
+
+.post-grid,
+.project-grid,
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.post-card,
+.project-card,
+.about-grid > div {
+  min-width: 0;
+  border: 2px solid #0a0a0a;
+  background: #ffffff;
+}
+
+.post-card a {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+  text-decoration: none;
+}
+
+.post-card-wide a {
+  min-height: 260px;
+}
+
+.post-card h3,
+.project-card h3,
+.about-grid h2 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.3vw, 2rem);
+  line-height: 1.02;
+}
+
+.post-card p,
+.project-card p,
+.about-grid p,
+.article-body p {
+  margin: 0;
+  color: #41413c;
+}
+
+.card-meta {
+  justify-content: space-between;
+  gap: 12px;
+  color: #595955;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tag-row {
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+.tag-row span,
+.tag-row a {
+  border: 1px solid #0a0a0a;
+  padding: 3px 8px;
+  background: #f2f2ec;
+  color: #0a0a0a;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.tag-row button {
+  border: 1px solid #0a0a0a;
+  padding: 3px 8px;
+  background: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tag-row a:hover,
+.tag-row a[aria-current="page"],
+.filter-bar button:hover {
+  background: #0a0a0a;
+  color: #fbfbf7;
+}
+
+.page-intro,
+.article-header {
+  display: grid;
+  gap: 22px;
+  padding-bottom: clamp(34px, 6vw, 64px);
+  border-bottom: 2px solid #0a0a0a;
+}
+
+.post-list {
+  display: grid;
+  gap: 18px;
+  padding-top: 28px;
+}
+
+.post-list .post-card a {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  align-items: start;
+}
+
+.project-card {
+  overflow: hidden;
+}
+
+.project-copy {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.project-card h3 a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.project-preview {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-bottom: 2px solid #0a0a0a;
+  background: #f7f7f2;
+}
+
+.project-preview iframe {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.project-preview-large {
+  margin-top: 28px;
+  aspect-ratio: 16 / 9;
+  border: 2px solid #0a0a0a;
+}
+
+.project-preview-large iframe {
+  pointer-events: auto;
+}
+
+.article-page {
+  max-width: 900px;
+  padding: clamp(36px, 7vw, 84px) 0;
+}
+
+.article-page .back-link,
+.project-page .back-link {
+  margin-bottom: 28px;
+}
+
+.article-body {
+  display: grid;
+  gap: 24px;
+  padding-top: clamp(34px, 6vw, 64px);
+}
+
+.article-body p,
+.article-body li {
+  font-size: clamp(1.08rem, 1.8vw, 1.28rem);
+}
+
+.article-body h2,
+.article-body h3 {
+  margin: 18px 0 0;
+  line-height: 1.05;
+}
+
+.article-body h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.article-body h3 {
+  font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+.article-body ul,
+.article-body ol {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.article-body a {
+  color: #0a0a0a;
+  font-weight: 800;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.article-body code {
+  border: 1px solid #0a0a0a;
+  background: #f2f2ec;
+  padding: 2px 5px;
+}
+
+.pagination {
+  justify-content: center;
+  gap: 8px;
+  padding-top: 30px;
+}
+
+.pagination a {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  font-weight: 900;
+}
+
+.about-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 28px;
+}
+
+.about-grid > div {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+}
+
+.site-footer {
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 40px;
+  padding: 24px clamp(18px, 5vw, 64px);
+  border-top: 2px solid #0a0a0a;
+  color: #4a4a45;
+  font-size: 0.9rem;
+}
+
+.site-footer a {
+  font-weight: 900;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 960px) {
+  .site-header,
+  .home-hero,
+  .post-list .post-card a,
+  .site-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+  }
+
+  .home-hero {
+    min-height: auto;
+  }
+
+  .post-grid,
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .brand strong {
+    font-size: 0.82rem;
+  }
+
+  .site-nav a {
+    padding: 7px 9px;
+    font-size: 0.8rem;
+  }
+
+  .home-hero h1,
+  .page-intro h1,
+  .article-header h1 {
+    font-size: clamp(2.6rem, 15vw, 4.6rem);
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .post-grid,
+  .project-grid,
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-preview-large {
+    aspect-ratio: 4 / 3;
+  }
+}

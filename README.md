@@ -22,6 +22,15 @@ npm run dev
 
 Vite zeigt nach dem Start die lokale Entwicklungsadresse an (standardmäßig `http://localhost:5173`). Die Anwendung nutzt Hash-Routing, zum Beispiel `#/blog` und `#/creative-code`.
 
+### Website-Themes
+
+In der Hauptnavigation lässt sich das Website-Theme jederzeit über die Auswahl **Theme** wechseln. Zur Auswahl stehen:
+
+- **Soft Pop** – das helle aktuelle Design mit abgerundeten Elementen und wenigen farbigen Akzenten (Standard).
+- **Original (Schwarz-Weiß)** – das frühere Design mit cremefarbenem Hintergrund, kräftigen schwarzen Umrandungen und kantigeren Elementen.
+
+Das Original-Theme verwendet das vollständige `App.css`- und `index.css`-Design aus Commit `d2992d8` und wird aus `main-site/public/classic-theme.css` geladen. Die Auswahl wird im `localStorage` des Browsers unter `site-theme` gespeichert und gilt nur für den jeweiligen Browser. Bei nicht verfügbarem Browser-Speicher bleibt das ausgewählte Theme bis zum Neuladen der Seite aktiv.
+
 ### Prüfen und bauen
 
 Im Ordner `main-site/`:

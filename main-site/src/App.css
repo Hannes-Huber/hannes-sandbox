@@ -56,6 +56,26 @@
   justify-content: flex-end;
 }
 
+.theme-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.theme-picker select {
+  max-width: 190px;
+  padding: 7px 28px 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+
 .site-nav a,
 .section-heading a,
 .back-link,
@@ -559,4 +579,48 @@ main {
   .post-list .post-card a {
     display: flex;
   }
+}
+
+/* Keep the original theme square and still while the active stylesheet loads. */
+:root[data-theme="classic"] *,
+:root[data-theme="classic"] *::before,
+:root[data-theme="classic"] *::after {
+  border-radius: 0 !important;
+  transition: none !important;
+}
+
+:root[data-theme="classic"] *:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  border-color: inherit !important;
+  outline: none !important;
+}
+
+:root[data-theme="classic"] .home-hero {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+:root[data-theme="classic"] a {
+  text-decoration-color: currentColor !important;
+}
+
+:root[data-theme="classic"] .site-nav a:hover:not([aria-current="page"]),
+:root[data-theme="classic"] .section-heading a:hover,
+:root[data-theme="classic"] .back-link:hover,
+:root[data-theme="classic"] .button-link:hover,
+:root[data-theme="classic"] .pagination a:hover:not([aria-current="page"]) {
+  background: #fbfbf7 !important;
+  color: #0a0a0a !important;
+}
+
+:root[data-theme="classic"] .tag-row a:hover:not([aria-current="page"]) {
+  background: #f2f2ec !important;
+  color: #0a0a0a !important;
+}
+
+:root[data-theme="classic"] .filter-bar button:hover {
+  background: #ffffff !important;
+  color: #0a0a0a !important;
 }
